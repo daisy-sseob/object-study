@@ -4,6 +4,7 @@ package com.sseob.chaptor01.reservation.domain;
 import com.sseob.chaptor01.generic.Money;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,59 +16,44 @@ public class DiscountPolicy {
   private PolicyType policyType;
   private Money amount;
   private Double percent;
+  private List<DiscountCondition> conditions;
 
   public DiscountPolicy() {
   }
 
   public DiscountPolicy(Long movieId, PolicyType policyType, Money amount, Double percent) {
-    this(null, movieId, policyType, amount, percent);
+    this(null, movieId, policyType, amount, percent, new ArrayList<>());
   }
 
-  public DiscountPolicy(Long id, Long movieId, PolicyType policyType, Money amount, Double percent) {
+  public DiscountPolicy(Long id, Long movieId, PolicyType policyType, Money amount, Double percent, List<DiscountCondition> conditions) {
     this.id = id;
     this.movieId = movieId;
     this.policyType = policyType;
     this.amount = amount;
     this.percent = percent;
+    this.conditions = conditions;
   }
 
 
-  public DiscountCondition findDiscountCondition(Screening screening, List<DiscountCondition> conditions) {
-    for (DiscountCondition condition : conditions) {
-      if (condition.isPeriodCondition()) {
-        if (screening.isPlayedIn(condition.getDayOfWeek(),
-                condition.getInterval().getStartTime(),
-                condition.getInterval().getEndTime())) {
-          return condition;
-        }
-      } else if (condition.isSequenceCondition()){
-        if (condition.getSequence().equals(screening.getSequence())) {
-          return condition;
-        }
-      } else if (condition.isCombinationCondition()) {
-        if (screening.isPlayedIn(
-                condition.getDayOfWeek(),
-                condition.getInterval().getStartTime(),
-                condition.getInterval().getEndTime()) &&
-                condition.getSequence().equals(screening.getSequence())) {
-          return condition;
-        }
-      }
-    }
+  public Money calculateDiscount(Movie movie) {
 
-    return null;
-  }
-
-
-  public Money calculateDiscount(DiscountPolicy policy, Movie movie) {
-
-    if (policy.isAmountPolicy()) {
-      return policy.getAmount();
-    } else if (policy.isPercentPolicy()) {
-      return movie.getFee().times(policy.getPercent());
+    if (isAmountPolicy()) {
+      return this.amount;
+    } else if (isPercentPolicy()) {
+      return movie.getFee().times(this.percent);
     }
     
     return Money.ZERO;
+  }
+  
+  public boolean findDiscountCondition(Screening screening) {
+    for (DiscountCondition condition : conditions) {
+      if (condition.isSatisfiedBy(screening)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private boolean isAmountPolicy() {
