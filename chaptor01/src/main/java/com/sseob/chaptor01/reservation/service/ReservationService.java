@@ -30,13 +30,11 @@ public class ReservationService {
     Screening screening = screeningDAO.selectScreening(screeningId);
     Movie movie = movieDAO.selectMovie(screening.getMovieId());
     DiscountPolicy policy = discountPolicyDAO.selectDiscountPolicy(movie.getId());
-    List<DiscountCondition> conditions = discountConditionDAO.selectDiscountConditions(policy.getId());
-
-    DiscountCondition condition = policy.findDiscountCondition(screening, conditions);
-
+    
+    boolean found = policy.findDiscountCondition(screening);
     Money fee;
-    if (condition != null) {
-      fee = movie.getFee().minus(policy.calculateDiscount(policy, movie));
+    if (found) {
+      fee = movie.getFee().minus(policy.calculateDiscount(movie));
     } else {
       fee = movie.getFee();
     }
@@ -46,7 +44,6 @@ public class ReservationService {
 
     return reservation;
   }
-
 
   private Reservation makeReservation(Long customerId, Long screeningId, Integer audienceCount, Money fee) {
     return new Reservation(customerId, screeningId, audienceCount, fee.times(audienceCount));

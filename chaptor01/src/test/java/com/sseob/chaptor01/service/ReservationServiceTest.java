@@ -26,75 +26,86 @@ import static java.time.DayOfWeek.WEDNESDAY;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservationServiceTest {
-    @InjectMocks
-    private ReservationService reservationService;
+  @InjectMocks
+  private ReservationService reservationService;
 
-    @Mock
-    private ScreeningDAO screeningDAO;
-    @Mock private MovieDAO movieDAO;
-    @Mock private DiscountPolicyDAO discountPolicyDAO;
-    @Mock private DiscountConditionDAO discountConditionDAO;
-    @Mock private ReservationDAO reservationDAO;
+  @Mock
+  private ScreeningDAO screeningDAO;
+  @Mock
+  private MovieDAO movieDAO;
+  @Mock
+  private DiscountPolicyDAO discountPolicyDAO;
+  @Mock
+  private DiscountConditionDAO discountConditionDAO;
+  @Mock
+  private ReservationDAO reservationDAO;
 
-    @Test
-    public void 금액할인정책_계산() {
-        // given
-        Long customerId = 1L;
-        Long screeningId = 1L;
-        Long movieId = 1L;
-        Long policyId = 1L;
+  @Test
+  public void 금액할인정책_계산() {
+    // given
+    Long customerId = 1L;
+    Long screeningId = 1L;
+    Long movieId = 1L;
+    Long policyId = 1L;
 
-        Mockito.when(screeningDAO.selectScreening(screeningId))
-                .thenReturn(new Screening(screeningId, movieId, 1, LocalDateTime.of(2024, 12, 11, 18, 0)));
+    Mockito.when(screeningDAO.selectScreening(screeningId))
+            .thenReturn(new Screening(screeningId, movieId, 1, LocalDateTime.of(2024, 12, 11, 18, 0)));
 
-        Mockito.when(movieDAO.selectMovie(movieId))
-                .thenReturn(new Movie(movieId, "한신", 120, Money.wons(10000)));
+    Mockito.when(movieDAO.selectMovie(movieId))
+            .thenReturn(new Movie(movieId, "한신", 120, Money.wons(10000)));
 
-        Mockito.when(discountPolicyDAO.selectDiscountPolicy(movieId))
-                .thenReturn(new DiscountPolicy(policyId, movieId, AMOUNT_POLICY, Money.wons(1000), null));
 
-        Mockito.when(discountConditionDAO.selectDiscountConditions(policyId))
-                .thenReturn(List.of(
-                        new DiscountCondition(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
-                        new DiscountCondition(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
-                        new DiscountCondition(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
-                        new DiscountCondition(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null)));
+    List<DiscountCondition> conditions = List.of(
+            new DiscountCondition(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
+            new DiscountCondition(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
+            new DiscountCondition(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
+            new DiscountCondition(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null)
+    );
+    Mockito.when(discountConditionDAO.selectDiscountConditions(policyId))
+            .thenReturn(conditions);
 
-        // when
-        Reservation reservation = reservationService.reserveScreening(customerId, screeningId, 2);
+    Mockito.when(discountPolicyDAO.selectDiscountPolicy(movieId))
+            .thenReturn(new DiscountPolicy(policyId, movieId, AMOUNT_POLICY, Money.wons(1000), null, conditions));
 
-        // then
-        Assertions.assertEquals(reservation.getFee(), Money.wons(18000));
-    }
 
-    @Test
-    public void 비율할인정책_계산() {
-        // given
-        Long customerId = 1L;
-        Long screeningId = 1L;
-        Long movieId = 1L;
-        Long policyId = 1L;
+    // when
+    Reservation reservation = reservationService.reserveScreening(customerId, screeningId, 2);
 
-        Mockito.when(screeningDAO.selectScreening(screeningId))
-                .thenReturn(new Screening(screeningId, movieId, 1, LocalDateTime.of(2024, 12, 11, 18, 0)));
+    // then
+    Assertions.assertEquals(reservation.getFee(), Money.wons(18000));
+  }
 
-        Mockito.when(movieDAO.selectMovie(movieId))
-                .thenReturn(new Movie(movieId, "한신", 120, Money.wons(10000)));
+  @Test
+  public void 비율할인정책_계산() {
+    // given
+    Long customerId = 1L;
+    Long screeningId = 1L;
+    Long movieId = 1L;
+    Long policyId = 1L;
 
-        Mockito.when(discountPolicyDAO.selectDiscountPolicy(movieId))
-                .thenReturn(new DiscountPolicy(policyId, movieId, PERCENT_POLICY, null, 0.1));
+    Mockito.when(screeningDAO.selectScreening(screeningId))
+            .thenReturn(new Screening(screeningId, movieId, 1, LocalDateTime.of(2024, 12, 11, 18, 0)));
 
-        Mockito.when(discountConditionDAO.selectDiscountConditions(policyId))
-                .thenReturn(List.of(
-                        new DiscountCondition(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
-                        new DiscountCondition(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
-                        new DiscountCondition(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
-                        new DiscountCondition(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null)));
+    Mockito.when(movieDAO.selectMovie(movieId))
+            .thenReturn(new Movie(movieId, "한신", 120, Money.wons(10000)));
 
-        // when
-        Reservation reservation = reservationService.reserveScreening(customerId, screeningId, 2);
+    List<DiscountCondition> conditions = List.of(
+            new DiscountCondition(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
+            new DiscountCondition(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
+            new DiscountCondition(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
+            new DiscountCondition(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null));
+    
+    Mockito.when(discountConditionDAO.selectDiscountConditions(policyId))
+            .thenReturn(conditions);
 
-        // then
-        Assertions.assertEquals(reservation.getFee(), Money.wons(18000));
-    }
+    Mockito.when(discountPolicyDAO.selectDiscountPolicy(movieId))
+            .thenReturn(new DiscountPolicy(policyId, movieId, PERCENT_POLICY, null, 0.1, conditions));
+
+
+    // when
+    Reservation reservation = reservationService.reserveScreening(customerId, screeningId, 2);
+
+    // then
+    Assertions.assertEquals(reservation.getFee(), Money.wons(18000));
+  }
 }
