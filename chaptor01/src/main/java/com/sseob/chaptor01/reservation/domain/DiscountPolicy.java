@@ -27,5 +27,6 @@ public abstract class DiscountPolicy {
   }
 
   protected abstract Money getDisCountAmount(Screening screening);
+  public abstract Long getPolicyId();
 
 }

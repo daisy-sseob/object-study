@@ -1,6 +1,8 @@
-package com.sseob.chaptor01.reservation.domain;
+package com.sseob.chaptor01.reservation.domain.discount;
 
 import com.sseob.chaptor01.generic.Money;
+import com.sseob.chaptor01.reservation.domain.DiscountPolicy;
+import com.sseob.chaptor01.reservation.domain.Screening;
 
 public class PercentDiscountPolicy extends DiscountPolicy {
   

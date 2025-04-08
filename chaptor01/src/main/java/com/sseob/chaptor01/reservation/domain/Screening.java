@@ -1,12 +1,15 @@
 package com.sseob.chaptor01.reservation.domain;
 
 import com.sseob.chaptor01.generic.Money;
+import lombok.Getter;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Screening {
+  
+  @Getter
   private Long id;
   private Movie movie;
   private Integer sequence;
@@ -38,6 +41,10 @@ public class Screening {
   
   public Money getFixedFee() {
     return this.movie.getFee();
+  }
+  
+  public boolean isSequence(Integer sequence) {
+    return this.sequence.equals(sequence);
   }
   
 }

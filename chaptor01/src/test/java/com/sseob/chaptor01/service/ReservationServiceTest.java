@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.sseob.chaptor01.reservation.domain.DiscountCondition.ConditionType.PERIOD_CONDITION;
-import static com.sseob.chaptor01.reservation.domain.DiscountCondition.ConditionType.SEQUENCE_CONDITION;
+import static com.sseob.chaptor01.reservation.domain.DiscountConditionInterface.ConditionType.PERIOD_CONDITION;
+import static com.sseob.chaptor01.reservation.domain.DiscountConditionInterface.ConditionType.SEQUENCE_CONDITION;
 import static com.sseob.chaptor01.reservation.domain.DiscountPolicy.PolicyType.AMOUNT_POLICY;
 import static com.sseob.chaptor01.reservation.domain.DiscountPolicy.PolicyType.PERCENT_POLICY;
 import static java.time.DayOfWeek.MONDAY;
@@ -55,11 +55,11 @@ public class ReservationServiceTest {
             .thenReturn(new Movie(movieId, "한신", 120, Money.wons(10000)));
 
 
-    List<DiscountCondition> conditions = List.of(
-            new DiscountCondition(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
-            new DiscountCondition(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
-            new DiscountCondition(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
-            new DiscountCondition(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null)
+    List<DiscountConditionInterface> conditions = List.of(
+            new DiscountConditionInterface(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
+            new DiscountConditionInterface(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
+            new DiscountConditionInterface(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
+            new DiscountConditionInterface(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null)
     );
     Mockito.when(discountConditionDAO.selectDiscountConditions(policyId))
             .thenReturn(conditions);
@@ -89,11 +89,11 @@ public class ReservationServiceTest {
     Mockito.when(movieDAO.selectMovie(movieId))
             .thenReturn(new Movie(movieId, "한신", 120, Money.wons(10000)));
 
-    List<DiscountCondition> conditions = List.of(
-            new DiscountCondition(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
-            new DiscountCondition(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
-            new DiscountCondition(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
-            new DiscountCondition(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null));
+    List<DiscountConditionInterface> conditions = List.of(
+            new DiscountConditionInterface(1L, policyId, SEQUENCE_CONDITION, null, null, null, 1),
+            new DiscountConditionInterface(2L, policyId, SEQUENCE_CONDITION, null, null, null, 10),
+            new DiscountConditionInterface(3L, policyId, PERIOD_CONDITION, MONDAY, LocalTime.of(10, 12), LocalTime.of(12, 0), null),
+            new DiscountConditionInterface(4L, policyId, PERIOD_CONDITION, WEDNESDAY, LocalTime.of(18, 0), LocalTime.of(21, 0), null));
     
     Mockito.when(discountConditionDAO.selectDiscountConditions(policyId))
             .thenReturn(conditions);
