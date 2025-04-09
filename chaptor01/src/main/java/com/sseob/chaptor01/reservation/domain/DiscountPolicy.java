@@ -14,6 +14,10 @@ public abstract class DiscountPolicy {
   public DiscountPolicy(DiscountCondition... conditions) {
     this.conditions = List.of(conditions);
   }
+  
+  public DiscountPolicy(List<DiscountCondition> conditions) {
+    this.conditions = conditions;
+  }
 
   public Money calculateDiscount(Screening screening) {
 

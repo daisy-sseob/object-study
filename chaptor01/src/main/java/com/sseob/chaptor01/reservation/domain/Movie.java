@@ -2,8 +2,11 @@ package com.sseob.chaptor01.reservation.domain;
 
 
 import com.sseob.chaptor01.generic.Money;
+import lombok.Getter;
 
 public class Movie {
+  
+  @Getter
   private Long id;
   private String title;
   private Integer runningTime;
