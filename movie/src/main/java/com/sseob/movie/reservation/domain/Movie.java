@@ -2,14 +2,22 @@ package com.sseob.movie.reservation.domain;
 
 
 import com.sseob.movie.generic.Money;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 
+@Entity
 public class Movie {
   
   @Getter
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String title;
   private Integer runningTime;
+  @Getter
   private Money fee;
   private DiscountPolicy discountPolicy;
 
@@ -30,10 +38,6 @@ public class Movie {
 
   public Money calculateFee(Screening screening) {
     return fee.minus(discountPolicy.calculateDiscount(screening));
-  }
-  
-  public Money getFee() {
-    return fee;
   }
   
 }

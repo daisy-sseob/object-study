@@ -1,23 +1,23 @@
 package com.sseob.movie.reservation.service;
 
 
-import com.sseob.movie.reservation.domain.*;
-import com.sseob.movie.reservation.persistence.*;
+import com.sseob.movie.reservation.domain.Reservation;
+import com.sseob.movie.reservation.domain.Screening;
+import com.sseob.movie.reservation.domain.repository.ReservationRepository;
+import com.sseob.movie.reservation.domain.repository.ScreeningRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
+@RequiredArgsConstructor
 public class ReservationService {
-  private ScreeningDAO screeningDAO;
-  private ReservationDAO reservationDAO;
-
-  public ReservationService(ScreeningDAO screeningDAO,
-                            ReservationDAO reservationDAO) {
-    this.screeningDAO = screeningDAO;
-    this.reservationDAO = reservationDAO;
-  }
+  private ScreeningRepository screeningRepository;
+  private ReservationRepository reservationRepository;
 
   public Reservation reserveScreening(Long customerId, Long screeningId, Integer audienceCount) {
-    Screening screening = screeningDAO.selectScreening(screeningId);
+    Screening screening = screeningRepository.findById(screeningId);
     Reservation reservation = screening.reserve(customerId, audienceCount);
-    reservationDAO.insert(reservation);
+    reservationRepository.save(reservation);
     return reservation;
   }
 

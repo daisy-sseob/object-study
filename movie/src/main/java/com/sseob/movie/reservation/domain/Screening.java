@@ -1,15 +1,22 @@
 package com.sseob.movie.reservation.domain;
 
 import com.sseob.movie.generic.Money;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@Entity
 public class Screening {
   
   @Getter
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private Movie movie;
   private Integer sequence;
