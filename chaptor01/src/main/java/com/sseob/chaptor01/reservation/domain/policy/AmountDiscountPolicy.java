@@ -1,4 +1,4 @@
-package com.sseob.chaptor01.reservation.domain.discount;
+package com.sseob.chaptor01.reservation.domain.policy;
 
 import com.sseob.chaptor01.generic.Money;
 import com.sseob.chaptor01.reservation.domain.DiscountCondition;
@@ -9,16 +9,10 @@ import java.util.List;
 
 public class AmountDiscountPolicy extends DiscountPolicy {
   
-  private Long policyId; 
-  private Money discountAmount;
+  private final Money discountAmount;
 
-  public AmountDiscountPolicy(Money discountAmount, DiscountCondition... conditions) {
-    super(conditions);
-    this.discountAmount = discountAmount;
-  }
-  
-  public AmountDiscountPolicy(Money discountAmount, List<DiscountCondition> conditions) {
-    super(conditions);
+  public AmountDiscountPolicy(Long policyId, Money discountAmount, List<DiscountCondition> conditions) {
+    super(policyId, conditions);
     this.discountAmount = discountAmount;
   }
 
@@ -27,9 +21,4 @@ public class AmountDiscountPolicy extends DiscountPolicy {
     return discountAmount;
   }
 
-  @Override
-  public Long getPolicyId() {
-    return this.policyId;
-  }
-  
 }

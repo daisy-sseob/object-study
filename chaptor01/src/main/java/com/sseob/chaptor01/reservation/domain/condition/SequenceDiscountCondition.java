@@ -1,11 +1,14 @@
-package com.sseob.chaptor01.reservation.domain.discount;
+package com.sseob.chaptor01.reservation.domain.condition;
 
 import com.sseob.chaptor01.reservation.domain.DiscountCondition;
 import com.sseob.chaptor01.reservation.domain.Screening;
+import lombok.Getter;
 
 public class SequenceDiscountCondition implements DiscountCondition {
   
   private final Integer sequence;
+  
+  @Getter
   private final Long policyId;
 
   public SequenceDiscountCondition(Long policyId, Integer sequence) {
@@ -18,8 +21,4 @@ public class SequenceDiscountCondition implements DiscountCondition {
     return screening.isSequence(this.sequence);
   }
 
-  @Override
-  public Long getPolicyId() {
-    return this.policyId;
-  }
 }

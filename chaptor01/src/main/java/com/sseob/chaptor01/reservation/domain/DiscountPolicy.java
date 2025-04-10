@@ -9,16 +9,20 @@ import java.util.List;
 @Getter
 public abstract class DiscountPolicy {
 
+  @Getter
+  private Long policyId;
   private List<DiscountCondition> conditions;
 
-  public DiscountPolicy(DiscountCondition... conditions) {
+  public DiscountPolicy(Long policyId, DiscountCondition... conditions) {
+    this.policyId = policyId;
     this.conditions = List.of(conditions);
   }
   
-  public DiscountPolicy(List<DiscountCondition> conditions) {
+  public DiscountPolicy(Long policyId, List<DiscountCondition> conditions) {
+    this.policyId = policyId;
     this.conditions = conditions;
   }
-
+  
   public Money calculateDiscount(Screening screening) {
 
     for (DiscountCondition condition : conditions) {
@@ -31,6 +35,5 @@ public abstract class DiscountPolicy {
   }
 
   protected abstract Money getDisCountAmount(Screening screening);
-  public abstract Long getPolicyId();
 
 }

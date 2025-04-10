@@ -1,13 +1,15 @@
-package com.sseob.chaptor01.reservation.domain.discount;
+package com.sseob.chaptor01.reservation.domain.condition;
 
 import com.sseob.chaptor01.reservation.domain.DiscountCondition;
 import com.sseob.chaptor01.reservation.domain.Screening;
+import lombok.Getter;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public class PeriodDiscountCondition implements DiscountCondition {
   
+  @Getter
   private final Long policyId;
   private final DayOfWeek dayOfWeek;
   private final LocalTime startTime;
@@ -29,8 +31,4 @@ public class PeriodDiscountCondition implements DiscountCondition {
         this.endTime);
   }
 
-  @Override
-  public Long getPolicyId() {
-    return this.policyId;
-  }
 }

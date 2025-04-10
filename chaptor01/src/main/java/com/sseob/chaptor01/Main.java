@@ -2,19 +2,18 @@ package com.sseob.chaptor01;
 
 
 import com.sseob.chaptor01.generic.Money;
-import com.sseob.chaptor01.reservation.domain.DiscountPolicy;
-import com.sseob.chaptor01.reservation.domain.Movie;
-import com.sseob.chaptor01.reservation.domain.Reservation;
-import com.sseob.chaptor01.reservation.domain.Screening;
-import com.sseob.chaptor01.reservation.domain.discount.AmountDiscountPolicy;
-import com.sseob.chaptor01.reservation.domain.discount.CombinedDiscountCondition;
-import com.sseob.chaptor01.reservation.domain.discount.PeriodDiscountCondition;
-import com.sseob.chaptor01.reservation.domain.discount.SequenceDiscountCondition;
+import com.sseob.chaptor01.reservation.domain.*;
+import com.sseob.chaptor01.reservation.domain.policy.AmountDiscountPolicy;
+import com.sseob.chaptor01.reservation.domain.condition.CombinedDiscountCondition;
+import com.sseob.chaptor01.reservation.domain.condition.PeriodDiscountCondition;
+import com.sseob.chaptor01.reservation.domain.condition.SequenceDiscountCondition;
 import com.sseob.chaptor01.reservation.persistence.*;
 import com.sseob.chaptor01.reservation.persistence.memory.*;
 import com.sseob.chaptor01.reservation.service.ReservationService;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.PrimitiveIterator;
 
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.LocalTime.of;
@@ -29,16 +28,19 @@ public class Main {
   ReservationService reservationService = new ReservationService(screeningDAO, reservationDAO);
 
   private Screening initializeData() {
+
+    Long policyId = 1L;
     Movie movie = new Movie("한산", 150, Money.wons(10000));
     movieDAO.insert(movie);
 
-    DiscountPolicy discountPolicy = new AmountDiscountPolicy(Money.wons(1000));
+    discountConditionDAO.insert(new SequenceDiscountCondition(policyId, 1));
+    discountConditionDAO.insert(new PeriodDiscountCondition(policyId, MONDAY, of(10, 0), of(12, 0)));
+    discountConditionDAO.insert(new CombinedDiscountCondition(policyId, 1, MONDAY, of(10, 0), of(12, 0)));
+
+    List<DiscountCondition> discountConditions = discountConditionDAO.selectDiscountConditions(policyId);
+    DiscountPolicy discountPolicy = new AmountDiscountPolicy(1L, Money.wons(1000), discountConditions);
     discountPolicyDAO.insert(discountPolicy);
 
-    discountConditionDAO.insert(new SequenceDiscountCondition(discountPolicy.getPolicyId(), 1));
-    discountConditionDAO.insert(new PeriodDiscountCondition(discountPolicy.getPolicyId(), MONDAY, of(10, 0), of(12, 0)));
-    discountConditionDAO.insert(new CombinedDiscountCondition(discountPolicy.getPolicyId(), 1, MONDAY, of(10, 0), of(12, 0)));
-    
     Screening screening = new Screening(movie, 7, LocalDateTime.of(2024, 12, 11, 18, 0));
     screeningDAO.insert(screening);
 

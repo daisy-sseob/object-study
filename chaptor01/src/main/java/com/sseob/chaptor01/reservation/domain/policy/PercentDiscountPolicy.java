@@ -1,4 +1,4 @@
-package com.sseob.chaptor01.reservation.domain.discount;
+package com.sseob.chaptor01.reservation.domain.policy;
 
 import com.sseob.chaptor01.generic.Money;
 import com.sseob.chaptor01.reservation.domain.DiscountCondition;
@@ -9,16 +9,10 @@ import java.util.List;
 
 public class PercentDiscountPolicy extends DiscountPolicy {
   
-  private Long policyId;
-  private double percent;
+  private final double percent;
 
-  public PercentDiscountPolicy(double percent, DiscountCondition... conditions) {
-    super(conditions);
-    this.percent = percent;
-  }
-
-  public PercentDiscountPolicy(double percent, List<DiscountCondition> conditions) {
-    super(conditions);
+  public PercentDiscountPolicy(Long policyId, double percent, List<DiscountCondition> conditions) {
+    super(policyId, conditions);
     this.percent = percent;
   }
 
@@ -27,9 +21,4 @@ public class PercentDiscountPolicy extends DiscountPolicy {
     return screening.getFixedFee().times(percent);
   }
 
-  @Override
-  public Long getPolicyId() {
-    return this.policyId;
-  }
-  
 }
